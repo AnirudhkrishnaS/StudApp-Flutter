@@ -45,20 +45,18 @@ class _ViewReplyPageState extends State<ViewReplyPage> {
   List<String> date_ = <String>[];
   List<String> complaint_ = <String>[];
   List<String> reply_ = <String>[];
-  List<String> status_ = <String>[];
 
   Future<void> viewreply() async {
     List<String> id = <String>[];
     List<String> date = <String>[];
     List<String> complaint = <String>[];
     List<String> reply = <String>[];
-    List<String> status = <String>[];
 
     try {
       SharedPreferences sh = await SharedPreferences.getInstance();
       String urls = sh.getString('url').toString();
       String lid = sh.getString('lid').toString();
-      String url = '$urls/myapp/user_viewreply/';
+      String url = '$urls/and_viewReply/';
 
       var data = await http.post(Uri.parse(url), body: {'lid': lid});
       var jsondata = json.decode(data.body);
@@ -73,7 +71,6 @@ class _ViewReplyPageState extends State<ViewReplyPage> {
         date.add(arr[i]['date']);
         complaint.add(arr[i]['complaint']);
         reply.add(arr[i]['reply']);
-        status.add(arr[i]['status']);
       }
 
       setState(() {
@@ -81,7 +78,6 @@ class _ViewReplyPageState extends State<ViewReplyPage> {
         date_ = date;
         complaint_ = complaint;
         reply_ = reply;
-        status_ = status;
       });
 
       print(statuss);
@@ -125,28 +121,43 @@ class _ViewReplyPageState extends State<ViewReplyPage> {
                   child: Column(
                     children: [
                       Card(
-                        child: Row(children: [
-                          Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Text(date_[index]),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Date"),
+                                  Text(date_[index]),
+                                ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Text(complaint_[index]),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("complaint"),
+                                  Text(complaint_[index]),
+                                ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Text(reply_[index]),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("reply"),
+                                  Text(reply_[index]),
+                                ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(5),
-                                child: Text(status_[index]),
-                              ),
-                            ],
-                          ),
-                        ]),
+                            ),
+                          ],
+                        ),
                         elevation: 8,
                         margin: EdgeInsets.all(10),
                       ),

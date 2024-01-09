@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:studapp/sendComplaints.dart';
+import 'package:studapp/viewMentors.dart';
 import 'package:studapp/viewProfile.dart';
+import 'package:studapp/viewReply.dart';
+import 'package:studapp/view_review.dart';
 
 // function to trigger app build
 void main() => runApp(const MyApp());
@@ -12,22 +16,31 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: appTitle,
-      home: MyHomePage(title: appTitle),
-    ); // MaterialApp
+      title: 'Login',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(title: 'Login'),
+    );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
   final String title;
 
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
 
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text("Home"),
         backgroundColor: Colors.green,
       ),
       body: const Center(
@@ -79,6 +92,13 @@ class MyHomePage extends StatelessWidget {
               title: const Text('View Mentors'),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewMentorPage(
+                        title: "login",
+                      ),
+                    ));
               },
             ),
             ListTile(
@@ -93,6 +113,27 @@ class MyHomePage extends StatelessWidget {
               title: const Text(' Send complaint '),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => mySendComplaintPage(
+                        title: "login",
+                      ),
+                    ));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.book),
+              title: const Text(' View Reply'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewReplyPage(
+                        title: "View Reply",
+                      ),
+                    ));
               },
             ),
             ListTile(
@@ -107,6 +148,13 @@ class MyHomePage extends StatelessWidget {
               title: const Text(' Send App review '),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => View_Rating(
+                        title: "login",
+                      ),
+                    ));
               },
             ),
             ListTile(

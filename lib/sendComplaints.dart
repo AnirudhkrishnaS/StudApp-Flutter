@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studapp/userhome.dart';
 
 void main() {
   runApp(const mySendComplaint());
@@ -61,17 +62,10 @@ class _mySendComplaintPageState extends State<mySendComplaintPage> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {},
-                child: Text("SendComplaint"),
-              ),
-              TextButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => SignUpPage()),
-                  // );
+                  _send_data();
                 },
-                child: Text("Signup"),
+                child: Text("Send"),
               ),
             ],
           ),
@@ -85,24 +79,26 @@ class _mySendComplaintPageState extends State<mySendComplaintPage> {
 
     SharedPreferences sh = await SharedPreferences.getInstance();
     String url = sh.getString('url').toString();
+    String lid = sh.getString('lid').toString();
 
-    final urls = Uri.parse('$url/myapp/user_SendComplaintpost/');
+    final urls = Uri.parse('$url/and_sendComplaint/');
     try {
       final response = await http.post(urls, body: {
         'complaint': complaint,
+        'lid': lid,
       });
       if (response.statusCode == 200) {
         String status = jsonDecode(response.body)['status'];
         if (status == 'ok') {
-          String lid = jsonDecode(response.body)['lid'];
-          sh.setString("lid", lid);
+          // String lid = jsonDecode(response.body)['lid'];
+          // sh.setString("lid", lid);
+          Fluttertoast.showToast(msg: 'success');
 
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => MyHomePage(title: "Home"),
-          //     )
-          // );
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHomePage(title: ""),
+              ));
         } else {
           Fluttertoast.showToast(msg: 'Not Found');
         }

@@ -1,0 +1,180 @@
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studapp/sendComplaints.dart';
+import 'package:studapp/viewMentorDetail.dart';
+
+void main() {
+  runApp(const ViewReply());
+}
+
+class ViewReply extends StatelessWidget {
+  const ViewReply({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'View Mentors',
+      theme: ThemeData(
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 18, 82, 98)),
+        useMaterial3: true,
+      ),
+      home: const ViewMentorPage(title: 'View Reply'),
+    );
+  }
+}
+
+class ViewMentorPage extends StatefulWidget {
+  const ViewMentorPage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<ViewMentorPage> createState() => _ViewMentorPageState();
+}
+
+class _ViewMentorPageState extends State<ViewMentorPage> {
+  _ViewMentorPageState() {
+    viewreply();
+  }
+
+  List<String> id_ = <String>[];
+  List<String> photo_ = <String>[];
+  List<String> name_ = <String>[];
+  List<String> course_ = <String>[];
+
+  Future<void> viewreply() async {
+    List<String> id = <String>[];
+    List<String> photo = <String>[];
+    List<String> name = <String>[];
+    List<String> course = <String>[];
+
+    try {
+      SharedPreferences sh = await SharedPreferences.getInstance();
+      String urls = sh.getString('url').toString();
+      String lid = sh.getString('lid').toString();
+      String url = '$urls/and_viewMentors/';
+
+      var data = await http.post(Uri.parse(url), body: {'lid': lid});
+      var jsondata = json.decode(data.body);
+      String statuss = jsondata['status'];
+
+      var arr = jsondata["data"];
+
+      print(arr.length);
+
+      for (int i = 0; i < arr.length; i++) {
+        id.add(arr[i]['id'].toString());
+        photo.add(sh.getString("img_url").toString() + arr[i]['photo']);
+        name.add(arr[i]['name']);
+        course.add(arr[i]['course']);
+      }
+
+      setState(() {
+        id_ = id;
+        photo_ = photo;
+        name_ = name;
+        course_ = course;
+      });
+
+      print(statuss);
+    } catch (e) {
+      print("Error ------------------- " + e.toString());
+      //there is error during converting file image to base64 encoding.
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => HomeNew()),
+              // );
+            },
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: Text(widget.title),
+        ),
+        body: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          // padding: EdgeInsets.all(5.0),
+          // shrinkWrap: true,
+          itemCount: id_.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              onLongPress: () {
+                print("long press" + index.toString());
+              },
+              title: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Card(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                                backgroundImage: NetworkImage(photo_[index]),
+                                radius: 100),
+                            Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("name"),
+                                  Text(name_[index]),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Course"),
+                                  Text(course_[index]),
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                final sh =
+                                    await SharedPreferences.getInstance();
+                                sh.setString(('mid'), id_[index]);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ViewProfilePage(
+                                        title: "more details",
+                                      ),
+                                    ));
+                              },
+                              child: Text("more details"),
+                            ),
+                          ],
+                        ),
+                        elevation: 8,
+                        margin: EdgeInsets.all(10),
+                      ),
+                    ],
+                  )),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
