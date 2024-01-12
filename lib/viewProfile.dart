@@ -49,8 +49,13 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          leading: BackButton(),
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          leading: BackButton(onPressed: () {
+
+          }),
+          backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
           title: Text(widget.title),
         ),
         body: SingleChildScrollView(
@@ -168,7 +173,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           String pincode = jsonDecode(response.body)['pincode'].toString();
           String district = jsonDecode(response.body)['district'];
           String currentlyCourse =
-              jsonDecode(response.body)['Currently_course'];
+          jsonDecode(response.body)['Currently_course'];
           String photo =
               img_url + jsonDecode(response.body)['photo'].toString();
 

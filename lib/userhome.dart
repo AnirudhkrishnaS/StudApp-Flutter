@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:studapp/sendComplaints.dart';
+import 'package:studapp/sendMentorReview.dart';
 import 'package:studapp/viewMentors.dart';
+import 'package:studapp/viewMyMentors.dart';
+import 'package:studapp/viewMyMentorsSession.dart';
 import 'package:studapp/viewProfile.dart';
 import 'package:studapp/viewReply.dart';
+import 'package:studapp/viewRequestStatus.dart';
 import 'package:studapp/view_review.dart';
 
 // function to trigger app build
@@ -106,6 +110,27 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('View Request Status'),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => viewRequestStatus(
+                        title: "View request status",
+                      ),
+                    ));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('View My Mentors'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => viewMyMentorsPage(
+                        title: "",
+                      ),
+                    ));
               },
             ),
             ListTile(
@@ -162,6 +187,13 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text(' Send Mentor review '),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SendMentorRating(
+                        title: "login",
+                      ),
+                    ));
               },
             ),
             ListTile(
@@ -169,6 +201,13 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('View Sessions'),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => viewMyMentorsSessionPage(
+                        title: "session",
+                      ),
+                    ));
               },
             ),
             ListTile(

@@ -7,60 +7,61 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studapp/sendComplaints.dart';
 import 'package:studapp/sendMentorReview.dart';
 import 'package:studapp/userhome.dart';
+import 'package:studapp/viewMentorDetail.dart';
+import 'package:studapp/viewSessions.dart';
 
 void main() {
-  runApp(const ViewReply());
+  runApp(const viewMyMentorsSession());
 }
 
-class ViewReply extends StatelessWidget {
-  const ViewReply({super.key});
+class viewMyMentorsSession extends StatelessWidget {
+  const viewMyMentorsSession({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'View Reply',
+      title: 'View Mentors',
       theme: ThemeData(
         colorScheme:
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 18, 82, 98)),
         useMaterial3: true,
       ),
-      home: const viewRequestStatus(title: 'View Reply'),
+      home: const viewMyMentorsSessionPage(title: 'View Reply'),
     );
   }
 }
 
-class viewRequestStatus extends StatefulWidget {
-  const viewRequestStatus({super.key, required this.title});
+class viewMyMentorsSessionPage extends StatefulWidget {
+  const viewMyMentorsSessionPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<viewRequestStatus> createState() => _viewRequestStatusState();
+  State<viewMyMentorsSessionPage> createState() =>
+      _viewMyMentorsSessionPageState();
 }
 
-class _viewRequestStatusState extends State<viewRequestStatus> {
-  _viewRequestStatusState() {
-    viewreply();
+class _viewMyMentorsSessionPageState extends State<viewMyMentorsSessionPage> {
+  _viewMyMentorsSessionPageState() {
+    viewMyMentorsSession();
   }
 
   List<String> id_ = <String>[];
-  List<String> mid_ = <String>[];
-  List<String> date_ = <String>[];
-  List<String> status_ = <String>[];
-  List<String> mentorName_ = <String>[];
+  List<String> photo_ = <String>[];
+  List<String> name_ = <String>[];
+  List<String> course_ = <String>[];
 
-  Future<void> viewreply() async {
+  Future<void> viewMyMentorsSession() async {
     List<String> id = <String>[];
-    List<String> mid = <String>[];
-    List<String> date = <String>[];
-    List<String> status = <String>[];
-    List<String> mentorName = <String>[];
+    List<String> photo = <String>[];
+    List<String> name = <String>[];
+    List<String> course = <String>[];
 
     try {
       SharedPreferences sh = await SharedPreferences.getInstance();
       String urls = sh.getString('url').toString();
       String lid = sh.getString('lid').toString();
-      String url = '$urls/and_viewRequestStatus/';
+      String url = '$urls/and_viewMyMentors/';
 
       var data = await http.post(Uri.parse(url), body: {'lid': lid});
       var jsondata = json.decode(data.body);
@@ -72,18 +73,16 @@ class _viewRequestStatusState extends State<viewRequestStatus> {
 
       for (int i = 0; i < arr.length; i++) {
         id.add(arr[i]['id'].toString());
-        mid.add(arr[i]['mid'].toString());
-        date.add(arr[i]['date']);
-        status.add(arr[i]['status']);
-        mentorName.add(arr[i]['mentorName']);
+        photo.add(sh.getString("img_url").toString() + arr[i]['photo']);
+        name.add(arr[i]['name']);
+        course.add(arr[i]['course']);
       }
 
       setState(() {
         id_ = id;
-        mid_ = mid;
-        date_ = date;
-        status_ = status;
-        mentorName_ = mentorName;
+        photo_ = photo;
+        name_ = name;
+        course_ = course;
       });
 
       print(statuss);
@@ -132,14 +131,17 @@ class _viewRequestStatusState extends State<viewRequestStatus> {
                       Card(
                         child: Column(
                           children: [
+                            CircleAvatar(
+                                backgroundImage: NetworkImage(photo_[index]),
+                                radius: 100),
                             Padding(
                               padding: EdgeInsets.all(5),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Date"),
-                                  Text(date_[index]),
+                                  Text("name"),
+                                  Text(name_[index]),
                                 ],
                               ),
                             ),
@@ -149,25 +151,30 @@ class _viewRequestStatusState extends State<viewRequestStatus> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("status"),
-                                  Text(status_[index]),
+                                  Text("Course"),
+                                  Text(course_[index]),
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.all(5),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Mentor name"),
-                                  Text(mentorName_[index]),
-                                ],
-                              ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                SharedPreferences sh =
+                                    await SharedPreferences.getInstance();
+                                sh.setString("mid", id_[index]).toString();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => viewSessionPage(
+                                        title: "sessions",
+                                      ),
+                                    ));
+                              },
+                              child: Text("View Sessions"),
                             ),
-                            if (status_[index] == 'approved') ...{}
                           ],
                         ),
+                        elevation: 8,
+                        margin: EdgeInsets.all(10),
                       ),
                     ],
                   )),

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studapp/userhome.dart';
 
 import 'editprofile.dart';
 
@@ -124,6 +125,41 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                       ],
                     ),
                   ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      SharedPreferences sh =
+                          await SharedPreferences.getInstance();
+                      String url = sh.getString('url').toString();
+                      String lid = sh.getString('lid').toString();
+
+                      final urls = Uri.parse('$url/and_sendRequest/');
+                      try {
+                        final response = await http
+                            .post(urls, body: {'lid': lid, 'mid': id_});
+                        if (response.statusCode == 200) {
+                          String status = jsonDecode(response.body)['status'];
+                          if (status == 'ok') {
+                            // String lid = jsonDecode(response.body)['lid'];
+                            // sh.setString("lid", lid);
+                            Fluttertoast.showToast(msg: 'success');
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MyHomePage(title: ""),
+                                ));
+                          } else {
+                            Fluttertoast.showToast(msg: 'Not Found');
+                          }
+                        } else {
+                          Fluttertoast.showToast(msg: 'Network Error');
+                        }
+                      } catch (e) {
+                        Fluttertoast.showToast(msg: e.toString());
+                      }
+                    },
+                    child: Text("Request"),
+                  ),
                 ],
               ),
             ],
@@ -134,6 +170,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   }
 
   String name_ = "";
+  String id_ = "";
   String course_ = "";
   String qualification_ = "";
   String email_ = "";
@@ -155,6 +192,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
         String status = jsonDecode(response.body)['status'];
         if (status == 'ok') {
           String name = jsonDecode(response.body)['name'];
+          String id = jsonDecode(response.body)['id'].toString();
           String email = jsonDecode(response.body)['email'];
           String phone = jsonDecode(response.body)['phone'];
           String place = jsonDecode(response.body)['city'];
@@ -171,6 +209,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             phone_ = phone;
             place_ = place;
             photo_ = photo;
+            id_ = id;
           });
         } else {
           Fluttertoast.showToast(msg: 'Not Found');
