@@ -9,6 +9,8 @@ import 'package:studapp/sendMentorReview.dart';
 import 'package:studapp/userhome.dart';
 import 'package:studapp/viewMentorDetail.dart';
 
+import 'chat.dart';
+
 void main() {
   runApp(const viewMyMentors());
 }
@@ -48,12 +50,14 @@ class _viewMyMentorsPageState extends State<viewMyMentorsPage> {
   List<String> photo_ = <String>[];
   List<String> name_ = <String>[];
   List<String> course_ = <String>[];
+  List<String> mlid_ = <String>[];
 
   Future<void> viewMyMentors() async {
     List<String> id = <String>[];
     List<String> photo = <String>[];
     List<String> name = <String>[];
     List<String> course = <String>[];
+    List<String> mlid = <String>[];
 
     try {
       SharedPreferences sh = await SharedPreferences.getInstance();
@@ -74,6 +78,7 @@ class _viewMyMentorsPageState extends State<viewMyMentorsPage> {
         photo.add(sh.getString("img_url").toString() + arr[i]['photo']);
         name.add(arr[i]['name']);
         course.add(arr[i]['course']);
+        mlid.add(arr[i]['mlid'].toString());
       }
 
       setState(() {
@@ -81,6 +86,7 @@ class _viewMyMentorsPageState extends State<viewMyMentorsPage> {
         photo_ = photo;
         name_ = name;
         course_ = course;
+        mlid_ = mlid;
       });
 
       print(statuss);
@@ -158,12 +164,12 @@ class _viewMyMentorsPageState extends State<viewMyMentorsPage> {
                               onPressed: () async {
                                 final sh =
                                     await SharedPreferences.getInstance();
-                                sh.setString(('mid'), id_[index]);
+                                sh.setString(('mid'), mlid_[index]);
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ViewProfilePage(
-                                        title: "more details",
+                                      builder: (context) => MyChatPage(
+                                        title: "chat",
                                       ),
                                     ));
                               },

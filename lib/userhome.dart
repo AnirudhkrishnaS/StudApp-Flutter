@@ -9,6 +9,8 @@ import 'package:studapp/viewReply.dart';
 import 'package:studapp/viewRequestStatus.dart';
 import 'package:studapp/view_review.dart';
 
+import 'changePassword.dart';
+
 // function to trigger app build
 void main() => runApp(const MyApp());
 
@@ -166,6 +168,13 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text(' change password '),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangePasswordPage(
+                        title: "change password",
+                      ),
+                    ));
               },
             ),
             ListTile(
